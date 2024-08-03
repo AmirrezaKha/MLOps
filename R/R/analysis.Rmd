@@ -1,0 +1,137 @@
+---
+title: "Census Data Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Function to install packages if they are not already installed
+install_if_missing <- function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p, dependencies = TRUE)
+  }
+}
+
+# List of required packages
+packages <- c("tidyverse", "ggplot2", "rmarkdown")
+
+# Install missing packages
+invisible(lapply(packages, install_if_missing))
+
+# Load the libraries
+library(tidyverse)
+library(ggplot2)
+library(rmarkdown)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Load and Clean Data
+
+Load and Clean Data can be done as follows:
+
+```{r}
+dataset1 <- read.csv("data/census_2021_2001.csv", TRUE, sep = ",")
+finaldata <- na.omit(dataset1)
+dataset2021 <- subset(finaldata, year != "2001")
+```
+
+## Fertility Rate Frequency Distribution
+
+You can also embed plots, for example:
+
+```{r}
+fertilityRateHist <- hist(dataset2021$total.fertility.rate, 
+  breaks = "Scott", freq = NULL, 
+  include.lowest = TRUE, right = TRUE, 
+  main = "Fertility Rate Frequency", 
+  xlab = "Fertility Rate", 
+  ylab = "Frequency", 
+  col = "#999999"
+)
+
+abline(v = mean(dataset2021$total.fertility.rate), col = "red", lwd = 2)
+abline(v = median(dataset2021$total.fertility.rate), col = "royalblue", lwd = 2)
+legend(x = "topright", c("Mean", "Median"), col = c("red", "royalblue"),
+ lwd = c(2, 2))
+
+```
+
+## Life Expectancy Frequency Distribution
+
+You can also embed plots, for example:
+
+```{r}
+expectancyAllHist <- hist(dataset2021$life.expectancy.both.sexes, 
+  breaks = "Scott", freq = NULL, 
+  include.lowest = TRUE, right = TRUE, 
+  main = "Life Expectancy Frequency Both Sexes", 
+  xlab = "Life Expectancy Rate", 
+  ylab = "Frequency", 
+  col = "#999999"
+)
+
+abline(v = mean(dataset2021$life.expectancy.both.sexes), col = "red", lwd = 2)
+abline(v = median(dataset2021$life.expectancy.both.sexes), col = "royalblue", lwd = 2)
+legend(x = "topright", c("Mean", "Median"),
+ col = c("red", "royalblue"), lwd = c(2, 2))
+
+```
+
+## Statistical Analysis
+```{r}
+cat("Total Fertility Rate:\n")
+print(mean(dataset2021$total.fertility.rate))
+print(sd(dataset2021$total.fertility.rate))
+print(quantile(dataset2021$total.fertility.rate))
+
+cat("Life Expectancy Both Sexes:\n")
+print(mean(dataset2021$life.expectancy.both.sexes))
+print(sd(dataset2021$life.expectancy.both.sexes))
+print(quantile(dataset2021$life.expectancy.both.sexes))
+
+cat("Life Expectancy Males:\n")
+print(mean(dataset2021$life.expectancy.males))
+print(sd(dataset2021$life.expectancy.males))
+print(quantile(dataset2021$life.expectancy.males))
+
+cat("Life Expectancy Females:\n")
+print(mean(dataset2021$life.expectancy.females))
+print(sd(dataset2021$life.expectancy.females))
+print(quantile(dataset2021$life.expectancy.females))
+
+```
+
+## Correlation Analysis
+
+```{r}
+ggplot(data = dataset2021, aes(x = total.fertility.rate, y = life.expectancy.both.sexes)) +
+  geom_point(size = 2, alpha = .75) +
+  ggtitle(paste("Correlation:", round(cor(dataset2021$total.fertility.rate, dataset2021$life.expectancy.both.sexes), digits = 2))) +
+  xlab("Total Fertility Rate") +
+  ylab("Life Expectancy of Both Sexes")
+```
+
+## Grouped Barplots
+
+```{r}
+dataset2021 %>% 
+  gather("Type", "Value", total.fertility.rate) %>% 
+  ggplot(aes(subregion, Value, fill = Type)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = 'Fertility rate in each subregion')
+
+dataset2021 %>% 
+  gather("Type", "Value", -country, -genc, -subregion, -region, -year,
+   -total.fertility.rate, -life.expectancy.males, -life.expectancy.females) %>% 
+  ggplot(aes(subregion, Value, fill = Type)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = 'Life expectancy in each subregion')
+```
