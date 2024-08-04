@@ -23,16 +23,28 @@ jobs:
       with:
         r-version: ${{ matrix.R }}
 
-    - name: Install dependencies
+    - name: Install remotes package
       run: |
         Rscript -e 'install.packages("remotes", dependencies = TRUE)'
+
+    - name: Install dependencies
+      run: |
         Rscript -e 'remotes::install_cran(c("tidyverse", "ggplot2", "rmarkdown", "testthat"), dependencies = TRUE)'
 
-    - name: Verify installation
+    - name: Verify tidyverse installation
       run: |
         Rscript -e 'if (!requireNamespace("tidyverse", quietly = TRUE)) { stop("tidyverse not installed") }'
+
+    - name: Verify ggplot2 installation
+      run: |
         Rscript -e 'if (!requireNamespace("ggplot2", quietly = TRUE)) { stop("ggplot2 not installed") }'
+
+    - name: Verify rmarkdown installation
+      run: |
         Rscript -e 'if (!requireNamespace("rmarkdown", quietly = TRUE)) { stop("rmarkdown not installed") }'
+
+    - name: Verify testthat installation
+      run: |
         Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { stop("testthat not installed") }'
 
     - name: Run tests
