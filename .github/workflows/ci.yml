@@ -46,9 +46,13 @@ jobs:
       run: |
         Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { print("Installing testthat failed."); stop("testthat not installed") } else { print("testthat successfully installed.") }'
 
-    - name: List files for debugging
+    - name: List root directory contents
       run: |
-        ls -R
+        ls -l
+
+    - name: List tests directory contents
+      run: |
+        ls -l tests
 
     - name: Run tests
       run: |
