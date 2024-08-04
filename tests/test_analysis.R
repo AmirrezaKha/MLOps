@@ -1,13 +1,24 @@
-library(testthat)
+# Load required libraries
 library(tidyverse)
 
-test_that("Data loads correctly", {
+# Function to run tests
+run_tests <- function() {
+  # Test 1: Data loads correctly
   dataset1 <- read.csv("data/census_2021_2001.csv", TRUE, sep = ",")
-  expect_true(nrow(dataset1) > 0)
-})
+  if (nrow(dataset1) <= 0) {
+    stop("Test failed: Data did not load correctly. Dataset has zero rows.")
+  } else {
+    message("Test passed: Data loads correctly.")
+  }
 
-test_that("No missing values in the dataset", {
-  dataset1 <- read.csv("data/census_2021_2001.csv", TRUE, sep = ",")
+  # Test 2: No missing values in the dataset
   finaldata <- na.omit(dataset1)
-  expect_equal(nrow(dataset1), nrow(finaldata))
-})
+  if (nrow(dataset1) != nrow(finaldata)) {
+    stop("Test failed: There are missing values in the dataset.")
+  } else {
+    message("Test passed: No missing values in the dataset.")
+  }
+}
+
+# Run the tests
+run_tests()

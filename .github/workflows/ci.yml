@@ -26,7 +26,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        Rscript -e 'install.packages(c("tidyverse", "ggplot2", "testthat", "rmarkdown"), dependencies = TRUE)'
+        Rscript -e 'install.packages(c("tidyverse", "ggplot2", "rmarkdown"), dependencies = TRUE)'
 
     - name: Run tests
       run: |
