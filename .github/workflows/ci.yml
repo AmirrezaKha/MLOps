@@ -23,29 +23,32 @@ jobs:
       with:
         r-version: ${{ matrix.R }}
 
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+
     - name: Install remotes package
       run: |
-        Rscript -e 'install.packages("remotes", dependencies = TRUE)'
+        Rscript -e 'install.packages("remotes", repos = "http://cran.us.r-project.org", dependencies = TRUE)'
 
     - name: Install dependencies
       run: |
-        Rscript -e 'remotes::install_cran(c("tidyverse", "ggplot2", "rmarkdown", "testthat"), dependencies = TRUE)'
+        Rscript -e 'remotes::install_cran(c("tidyverse", "ggplot2", "rmarkdown", "testthat"), dependencies = TRUE, quiet = FALSE)'
 
     - name: Verify tidyverse installation
       run: |
-        Rscript -e 'if (!requireNamespace("tidyverse", quietly = TRUE)) { stop("tidyverse not installed") }'
+        Rscript -e 'if (!requireNamespace("tidyverse", quietly = TRUE)) { print("Installing tidyverse failed."); stop("tidyverse not installed") } else { print("tidyverse successfully installed.") }'
 
     - name: Verify ggplot2 installation
       run: |
-        Rscript -e 'if (!requireNamespace("ggplot2", quietly = TRUE)) { stop("ggplot2 not installed") }'
+        Rscript -e 'if (!requireNamespace("ggplot2", quietly = TRUE)) { print("Installing ggplot2 failed."); stop("ggplot2 not installed") } else { print("ggplot2 successfully installed.") }'
 
     - name: Verify rmarkdown installation
       run: |
-        Rscript -e 'if (!requireNamespace("rmarkdown", quietly = TRUE)) { stop("rmarkdown not installed") }'
+        Rscript -e 'if (!requireNamespace("rmarkdown", quietly = TRUE)) { print("Installing rmarkdown failed."); stop("rmarkdown not installed") } else { print("rmarkdown successfully installed.") }'
 
     - name: Verify testthat installation
       run: |
-        Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { stop("testthat not installed") }'
+        Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { print("Installing testthat failed."); stop("testthat not installed") } else { print("testthat successfully installed.") }'
 
     - name: Run tests
       run: |
