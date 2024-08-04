@@ -17,14 +17,11 @@ jobs:
     - name: Set up R
       uses: r-lib/actions/setup-r@v3
       with:
-        r-version: 'latest'
+        r-version: 'latest'  # Consider specifying a fixed version if needed
 
     - name: Install dependencies
       run: |
-        Rscript -e 'install.packages("tidyverse")'
-        Rscript -e 'install.packages("ggplot2")'
-        Rscript -e 'install.packages("testthat")'
-        Rscript -e 'install.packages("rmarkdown")'
+        Rscript -e 'install.packages(c("tidyverse", "ggplot2", "testthat", "rmarkdown"), dependencies = TRUE)'
 
     - name: Run tests
       run: |
