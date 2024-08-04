@@ -34,10 +34,6 @@ jobs:
       run: |
         Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat"), dependencies = TRUE, quiet = FALSE)'
 
-    # - name: Verify tidyverse installation
-    #   run: |
-    #     Rscript -e 'if (!requireNamespace("tidyverse", quietly = TRUE)) { print("Installing tidyverse failed."); stop("tidyverse not installed") } else { print("tidyverse successfully installed.") }'
-
     - name: Verify ggplot2 installation
       run: |
         Rscript -e 'if (!requireNamespace("ggplot2", quietly = TRUE)) { print("Installing ggplot2 failed."); stop("ggplot2 not installed") } else { print("ggplot2 successfully installed.") }'
@@ -49,6 +45,10 @@ jobs:
     - name: Verify testthat installation
       run: |
         Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { print("Installing testthat failed."); stop("testthat not installed") } else { print("testthat successfully installed.") }'
+
+    - name: List files for debugging
+      run: |
+        ls -R
 
     - name: Run tests
       run: |

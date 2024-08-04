@@ -7,7 +7,7 @@ install_if_missing <- function(p) {
 }
 
 # List of required packages
-required_packages <- c("tidyverse", "ggplot2", "rmarkdown")
+required_packages <- c("ggplot2", "rmarkdown")
 
 # Install and load required packages
 lapply(required_packages, install_if_missing)
