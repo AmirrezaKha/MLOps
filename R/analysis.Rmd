@@ -1,0 +1,151 @@
+---
+title: "Census Data Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+---
+title: "Census Data Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Function to install packages if they are not already installed
+install_if_missing <- function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p, dependencies = TRUE)
+  }
+}
+
+# List of required packages
+packages <- c("ggplot2", "rmarkdown", "reshape2")
+
+# Install missing packages
+invisible(lapply(packages, install_if_missing))
+
+# Load the libraries
+library(ggplot2)
+library(rmarkdown)
+library(reshape2)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Load and Clean Data
+
+Load and Clean Data can be done as follows:
+
+```{r}
+dataset1 <- read.csv("data/census_2021_2001.csv", TRUE, sep = ",")
+finaldata <- na.omit(dataset1)
+dataset2021 <- subset(finaldata, year != "2001")
+
+```
+
+## Fertility Rate Frequency Distribution
+
+You can also embed plots, for example:
+
+```{r}
+fertilityRateHist <- hist(dataset2021$total.fertility.rate, 
+  breaks = "Scott", freq = NULL, 
+  include.lowest = TRUE, right = TRUE, 
+  main = "Fertility Rate Frequency", 
+  xlab = "Fertility Rate", 
+  ylab = "Frequency", 
+  col = "#999999"
+)
+
+abline(v = mean(dataset2021$total.fertility.rate), col = "red", lwd = 2)
+abline(v = median(dataset2021$total.fertility.rate), col = "royalblue", lwd = 2)
+legend(x = "topright", c("Mean", "Median"), col = c("red", "royalblue"),
+ lwd = c(2, 2))
+
+```
+
+## Life Expectancy Frequency Distribution
+
+You can also embed plots, for example:
+
+```{r}
+expectancyAllHist <- hist(dataset2021$life.expectancy.both.sexes, 
+  breaks = "Scott", freq = NULL, 
+  include.lowest = TRUE, right = TRUE, 
+  main = "Life Expectancy Frequency Both Sexes", 
+  xlab = "Life Expectancy Rate", 
+  ylab = "Frequency", 
+  col = "#999999"
+)
+
+abline(v = mean(dataset2021$life.expectancy.both.sexes), col = "red", lwd = 2)
+abline(v = median(dataset2021$life.expectancy.both.sexes), col = "royalblue", lwd = 2)
+legend(x = "topright", c("Mean", "Median"),
+ col = c("red", "royalblue"), lwd = c(2, 2))
+
+```
+
+## Statistical Analysis
+```{r}
+cat("Total Fertility Rate:\n")
+print(mean(dataset2021$total.fertility.rate))
+print(sd(dataset2021$total.fertility.rate))
+print(quantile(dataset2021$total.fertility.rate))
+
+cat("Life Expectancy Both Sexes:\n")
+print(mean(dataset2021$life.expectancy.both.sexes))
+print(sd(dataset2021$life.expectancy.both.sexes))
+print(quantile(dataset2021$life.expectancy.both.sexes))
+
+cat("Life Expectancy Males:\n")
+print(mean(dataset2021$life.expectancy.males))
+print(sd(dataset2021$life.expectancy.males))
+print(quantile(dataset2021$life.expectancy.males))
+
+cat("Life Expectancy Females:\n")
+print(mean(dataset2021$life.expectancy.females))
+print(sd(dataset2021$life.expectancy.females))
+print(quantile(dataset2021$life.expectancy.females))
+
+
+```
+
+## Correlation Analysis
+
+```{r}
+ggplot(data = dataset2021, aes(x = total.fertility.rate, y = life.expectancy.both.sexes)) +
+  geom_point(size = 2, alpha = .75) +
+  ggtitle(paste("Correlation:", round(cor(dataset2021$total.fertility.rate, dataset2021$life.expectancy.both.sexes), digits = 2))) +
+  xlab("Total Fertility Rate") +
+  ylab("Life Expectancy of Both Sexes")
+
+
+```
+
+## Grouped Barplots
+
+```{r}
+# Base R approach to achieve similar results as tidyr and dplyr
+
+# Fertility rate in each subregion
+boxplot(dataset2021$total.fertility.rate ~ dataset2021$subregion,
+        main = "Fertility rate in each subregion",
+        xlab = "Subregion",
+        ylab = "Fertility Rate",
+        las = 2, # Make labels perpendicular to the axis
+        col = "lightblue")
+
+# Life expectancy in each subregion
+melted_data <- melt(dataset2021, id.vars = c("country", "genc", "subregion", "region", "year"),
+                    measure.vars = c("life.expectancy.males", "life.expectancy.females"))
+boxplot(value ~ subregion + variable, data = melted_data,
+        main = "Life expectancy in each subregion",
+        xlab = "Subregion",
+        ylab = "Life Expectancy",
+        las = 2, # Make labels perpendicular to the axis
+        col = "lightblue")
+
+```

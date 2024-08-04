@@ -32,7 +32,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat"), dependencies = TRUE, quiet = FALSE)'
+        Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat", "reshape2"), dependencies = TRUE, quiet = FALSE)'
 
     - name: Verify ggplot2 installation
       run: |
@@ -45,6 +45,10 @@ jobs:
     - name: Verify testthat installation
       run: |
         Rscript -e 'if (!requireNamespace("testthat", quietly = TRUE)) { print("Installing testthat failed."); stop("testthat not installed") } else { print("testthat successfully installed.") }'
+
+    - name: Verify reshape2 installation
+      run: |
+        Rscript -e 'if (!requireNamespace("reshape2", quietly = TRUE)) { print("Installing reshape2 failed."); stop("reshape2 not installed") } else { print("reshape2 successfully installed.") }'
 
     - name: List root directory contents
       run: |
