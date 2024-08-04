@@ -34,7 +34,7 @@ This is an R Markdown format used for publishing markdown documents to GitHub. W
 Load and Clean Data can be done as follows:
 
 ```{r}
-dataset1 <- read.csv("data/census_2021_2001.csv", TRUE, sep = ",")
+dataset1 <- read.csv("../data/census_2021_2001.csv", TRUE, sep = ",")
 finaldata <- na.omit(dataset1)
 dataset2021 <- subset(finaldata, year != "2001")
 
