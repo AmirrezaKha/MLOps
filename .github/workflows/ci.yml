@@ -2,16 +2,17 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        R: ['3.5.3', '3.6.1']  # List all R versions you want to test
+        R: ['3.5.3', '3.6.1']
 
     name: R ${{ matrix.R }} sample
     steps:
