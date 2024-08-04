@@ -56,7 +56,7 @@ jobs:
 
     - name: Run tests
       run: |
-        Rscript tests/test_analysis_base.R
+        Rscript tests/test_analysis.R
 
     - name: Render R Markdown
       run: |
