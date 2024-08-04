@@ -1,13 +1,13 @@
 # Function to check if a package is installed, and install it if not
 install_if_missing <- function(p) {
   if (!require(p, character.only = TRUE)) {
-    install.packages(p, dependencies = TRUE)
+    install.packages(p, dependencies = TRUE, repos="http://cran.rstudio.com/")
     library(p, character.only = TRUE)
   }
 }
 
 # List of required packages
-required_packages <- c("tidyverse", "ggplot2")
+required_packages <- c("tidyverse", "ggplot2", "rmarkdown")
 
 # Install and load required packages
 lapply(required_packages, install_if_missing)
