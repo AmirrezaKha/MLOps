@@ -4,12 +4,6 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
----
-title: "Census Data Analysis"
-output: github_document
----
-
-```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 # Function to install packages if they are not already installed
