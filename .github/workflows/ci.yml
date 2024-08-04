@@ -54,6 +54,10 @@ jobs:
       run: |
         ls -l
 
+    - name: List data directory contents
+      run: |
+        ls -l data
+
     - name: List tests directory contents
       run: |
         ls -l tests
