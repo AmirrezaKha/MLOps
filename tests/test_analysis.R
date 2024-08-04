@@ -29,7 +29,7 @@ run_tests <- function() {
 #   } else {
 #     message("Test passed: No missing values in the dataset.")
 #   }
-# }
+}
 
 # Run the tests
 run_tests()
