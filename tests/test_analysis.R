@@ -1,5 +1,16 @@
-# Load required libraries
-library(tidyverse)
+# Function to check if a package is installed, and install it if not
+install_if_missing <- function(p) {
+  if (!require(p, character.only = TRUE)) {
+    install.packages(p, dependencies = TRUE)
+    library(p, character.only = TRUE)
+  }
+}
+
+# List of required packages
+required_packages <- c("tidyverse", "ggplot2")
+
+# Install and load required packages
+lapply(required_packages, install_if_missing)
 
 # Function to run tests
 run_tests <- function() {
