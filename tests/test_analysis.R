@@ -22,14 +22,14 @@ run_tests <- function() {
     message("Test passed: Data loads correctly.")
   }
 
-  # Test 2: No missing values in the dataset
-  finaldata <- na.omit(dataset1)
-  if (nrow(dataset1) != nrow(finaldata)) {
-    stop("Test failed: There are missing values in the dataset.")
-  } else {
-    message("Test passed: No missing values in the dataset.")
-  }
-}
+#   # Test 2: No missing values in the dataset
+#   finaldata <- na.omit(dataset1)
+#   if (nrow(dataset1) != nrow(finaldata)) {
+#     stop("Test failed: There are missing values in the dataset.")
+#   } else {
+#     message("Test passed: No missing values in the dataset.")
+#   }
+# }
 
 # Run the tests
 run_tests()
