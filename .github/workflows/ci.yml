@@ -54,8 +54,9 @@ jobs:
       run: |
         Rscript -e 'if (!requireNamespace("leaps", quietly = TRUE)) { print("Installing leaps failed."); stop("leaps not installed") } else { print("leaps successfully installed.") }'
 
-    - name: Verify olsrr installation
+    - name: Install olsrr with dependencies
       run: |
+        Rscript -e 'install.packages("olsrr", dependencies = TRUE, repos = "http://cran.us.r-project.org")'
         Rscript -e 'if (!requireNamespace("olsrr", quietly = TRUE)) { print("Installing olsrr failed."); stop("olsrr not installed") } else { print("olsrr successfully installed.") }'
 
     - name: List root directory contents
@@ -72,7 +73,7 @@ jobs:
 
     - name: Run tests
       run: |
-        Rscript tests/test_analysis.R
+        Rscript tests/test_regression.R
 
     - name: Render R Markdown files
       run: |
