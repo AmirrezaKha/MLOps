@@ -30,6 +30,10 @@ jobs:
       run: |
         Rscript -e 'install.packages("remotes", repos = "http://cran.us.r-project.org", dependencies = TRUE)'
 
+    - name: Update Matrix package
+      run: |
+        Rscript -e 'install.packages("Matrix", repos = "http://cran.us.r-project.org")'
+
     - name: Install dependencies
       run: |
         Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat", "reshape2", "leaps", "olsrr"), dependencies = TRUE, quiet = FALSE)'
