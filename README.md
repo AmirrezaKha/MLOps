@@ -20,3 +20,21 @@ This project performs analysis on census data using R and R Markdown, with CI/CD
 3. Run the analysis using RStudio or the command line:
    ```sh
    Rscript -e "rmarkdown::render('R/analysis.Rmd')"
+
+## CI/CD with GitHub Actions
+
+This project uses GitHub Actions for continuous integration and continuous deployment. The workflow is defined in the `.github/workflows/ci.yml` file.
+
+### Workflow Overview
+
+The workflow performs the following steps:
+
+1. **Triggers** on push and pull request events to the `master` branch, and can be manually triggered.
+2. **Runs** on the latest Ubuntu environment.
+3. **Sets up R** with the specified version.
+4. **Installs** system dependencies and R packages.
+5. **Verifies** the installation of key R packages.
+6. **Lists** the contents of relevant directories.
+7. **Runs** tests.
+8. **Renders** the R Markdown file.
+9. **Prints** session information.

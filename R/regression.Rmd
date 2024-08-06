@@ -1,0 +1,99 @@
+---
+title: "Regression Analysis on VW Cars Data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+# Load necessary libraries
+library(ggplot2)
+library(leaps)
+library(olsrr)
+```
+
+## Data Preparation
+
+```{r}
+# Read the dataset
+vwcars <- read.csv("data/vwcars.csv", sep = ",")
+
+# Create new columns for log price, fuel consumption, and age of the car
+vwcars$logprice <- log(vwcars$price)
+vwcars$lp100 <- 282.48 / vwcars$mpg
+vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
+```
+
+## Linear Regression
+
+```{r}
+
+# Linear regression analysis for price
+lm_price <- lm(price ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
+summary(lm_price)
+
+# Linear regression analysis for log(price)
+lm_logprice <- lm(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
+summary(lm_logprice)
+```
+
+## Best Subset Selection
+
+```{r}
+# Best Subset Selection for all the subsets of the predictors
+z <- ols_step_all_possible(lm_logprice)
+nrow(z) # 255
+
+idx_AIC <- which.min(z$aic) # 247
+idx_BIC <- which.min(z$sbc) # 219
+
+AIC <- min(z$aic) # -704.4099
+BIC <- min(z$sbc) # -659.3426
+
+variables_in_aic <- z[idx_AIC, "predictors"] # "model age lp100 fuelType engineSize transmission mileage"
+variables_in_bic <- z[idx_BIC, "predictors"] # "model age fuelType engineSize transmission mileage"
+
+# Estimate the "best" linear model for logprice using the BIC
+lm_bic <- lm(logprice ~ model + age + fuelType + engineSize + transmission + mileage, data = vwcars)
+summary(lm_bic)
+confint(lm_bic)
+```
+
+# Assumptions Checking
+## Residual vs Fitted Plot
+
+```{r}
+ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
+  geom_point() +
+  ylab("Residuals") +
+  xlab("Fitted values") +
+  ggtitle("Residual vs Fitted Plot") +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"), text = element_text(size = 20)) +
+  geom_abline(intercept = 0, slope = 0, col = "blue") +
+  theme_bw()
+```
+## Scale-Location Plot
+
+```{r}
+fitted_values <- fitted(lm_bic)
+std_res <- rstandard(lm_bic)
+
+ggplot(data = vwcars, aes(y = std_res, x = fitted_values)) +
+  geom_point(size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, size = 1, color = "blue") +
+  ggtitle("Scale-Location Plot") +
+  labs(y = "Standardized Residuals", x = "Fitted Values") +
+  theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"), text = element_text(size = 20)) +
+  theme_bw()
+```
+## Normal Q-Q Plot
+
+```{r}
+ggplot(data = vwcars, aes(sample = lm_bic$residuals)) +
+  geom_qq(color = "black") +
+  geom_qq_line(color = "blue") +
+  labs(y = "Residuals (BIC model)", x = "Theoretical Quantiles (BIC model)") +
+  theme_bw() +
+  theme(axis.title.x = element_text(size = 14, face = "bold"),
+        axis.title.y = element_text(size = 14, face = "bold"),
+        axis.text = element_text(size = 12, face = "bold")) +
+  theme_bw()
+  ```

@@ -1,0 +1,91 @@
+---
+title: "Statistical Tests on Real Estate Data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+# Load necessary libraries
+library(ggplot2)
+```
+
+## Data Preparation
+
+
+## Load the dataset
+```{r}
+immo_data_ruhr <- read.csv("../data/immo_data_ruhr.csv", sep = ",")
+colnames(immo_data_ruhr)[3] <- "region"
+```
+## Calculate summary statistics by region
+```{r}
+summary_stats <- aggregate(sqmPrice ~ region, data = immo_data_ruhr, function(x) {
+  c(
+    count = length(x),
+    mean = mean(x, na.rm = TRUE),
+    sd = sd(x, na.rm = TRUE),
+    min = quantile(x, probs = 0),
+    quant25 = quantile(x, probs = 0.25),
+    quant50 = quantile(x, probs = 0.5),
+    quant75 = quantile(x, probs = 0.75),
+    max = quantile(x, probs = 1)
+  )
+})
+```
+## Convert summary statistics to a readable format
+```{r}
+summary_stats <- do.call(data.frame, summary_stats)
+print(summary_stats)
+```
+
+# QQ-Plots
+
+## Subset data by region
+```{r}
+immo_data_dortmund <- subset(immo_data_ruhr, region == "Dortmund")
+immo_data_bochum <- subset(immo_data_ruhr, region == "Bochum")
+immo_data_duisburg <- subset(immo_data_ruhr, region == "Duisburg")
+immo_data_essen <- subset(immo_data_ruhr, region == "Essen")
+```
+## QQ-plots for different regions
+```{r}
+par(mfrow = c(2, 2))
+qqnorm(immo_data_dortmund$sqmPrice, main = "Dortmund")
+qqline(immo_data_dortmund$sqmPrice, col = "steelblue", lwd = 2)
+
+qqnorm(immo_data_bochum$sqmPrice, main = "Bochum")
+qqline(immo_data_bochum$sqmPrice, col = "steelblue", lwd = 2)
+
+qqnorm(immo_data_duisburg$sqmPrice, main = "Duisburg")
+qqline(immo_data_duisburg$sqmPrice, col = "steelblue", lwd = 2)
+
+qqnorm(immo_data_essen$sqmPrice, main = "Essen")
+qqline(immo_data_essen$sqmPrice, col = "steelblue", lwd = 2)
+```
+## Box plot for sqmPrice by region
+```{r}
+ggplot(data = immo_data_ruhr, aes(y = sqmPrice, x = factor(region))) +
+  stat_boxplot(alpha = 0.6, size = 0.7, outlier.colour = "black", width = 0.5, aes(fill = region)) +
+  ylab("sqmPrice (in sqm)") +
+  xlab("Region") +
+  theme(axis.title.x = element_text(colour = "black", size = 12, face = "bold"),
+        axis.title.y = element_text(colour = "black", size = 12, face = "bold"),
+        axis.text.x = element_text(size = 12, face = "bold"),
+        axis.text.y = element_text(size = 12, face = "bold"),
+        legend.title = element_text(size = 12, face = "bold"),
+        legend.text = element_text(size = 10))
+```
+##  ANOVA test
+```{r}
+data_anova <- anova(lm(sqmPrice ~ region, data = immo_data_ruhr))
+print(data_anova)
+```
+#  Pairwise t-tests
+##  Two-sided t-test
+```{r}
+pairwise_t_test_none <- pairwise.t.test(immo_data_ruhr$sqmPrice, factor(immo_data_ruhr$region), p.adj = "none", pool.sd = TRUE, alternative = "two.sided", var.equal = TRUE)
+print(pairwise_t_test_none)
+
+##  Bonferroni-adjusted t-test
+pairwise_t_test_bonferroni <- pairwise.t.test(immo_data_ruhr$sqmPrice, immo_data_ruhr$region, p.adj = "bonf", pool.sd = TRUE, alternative = "two.sided", var.equal = TRUE)
+print(pairwise_t_test_bonferroni)
+```
