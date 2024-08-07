@@ -7,7 +7,6 @@ output: github_document
 # Load necessary libraries
 library(ggplot2)
 library(leaps)
-library(olsrr)
 ```
 
 ## Data Preparation
@@ -21,11 +20,8 @@ vwcars$logprice <- log(vwcars$price)
 vwcars$lp100 <- 282.48 / vwcars$mpg
 vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
 ```
-
-## Linear Regression
-
+**Linear Regression**
 ```{r}
-
 # Linear regression analysis for price
 lm_price <- lm(price ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
 summary(lm_price)
@@ -34,32 +30,47 @@ summary(lm_price)
 lm_logprice <- lm(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
 summary(lm_logprice)
 ```
-
-## Best Subset Selection
-
+**Best Subset Selection**
 ```{r}
 # Best Subset Selection for all the subsets of the predictors
-z <- ols_step_all_possible(lm_logprice)
-nrow(z) # 255
+best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars, nvmax = NULL)
 
-idx_AIC <- which.min(z$aic) # 247
-idx_BIC <- which.min(z$sbc) # 219
+# Create a summary object
+subsets_summary <- summary(best_subsets)
 
-AIC <- min(z$aic) # -704.4099
-BIC <- min(z$sbc) # -659.3426
+# Find the model with the lowest AIC and BIC
+aic_values <- sapply(1:length(subsets_summary$which), function(i) {
+  fit <- lm(logprice ~ ., data = as.data.frame(vwcars)[, c(TRUE, subsets_summary$which[i, -1])])
+  AIC(fit)
+})
 
-variables_in_aic <- z[idx_AIC, "predictors"] # "model age lp100 fuelType engineSize transmission mileage"
-variables_in_bic <- z[idx_BIC, "predictors"] # "model age fuelType engineSize transmission mileage"
+bic_values <- sapply(1:length(subsets_summary$which), function(i) {
+  fit <- lm(logprice ~ ., data = as.data.frame(vwcars)[, c(TRUE, subsets_summary$which[i, -1])])
+  BIC(fit)
+})
+
+# Find the index of the minimum AIC and BIC
+idx_AIC <- which.min(aic_values)
+idx_BIC <- which.min(bic_values)
+
+# Extract the variables from the best models
+variables_in_aic <- names(which(subsets_summary$which[idx_AIC, ]))
+variables_in_bic <- names(which(subsets_summary$which[idx_BIC, ]))
+
+# Print AIC and BIC
+AIC <- aic_values[idx_AIC]
+BIC <- bic_values[idx_BIC]
+
+cat("Best AIC model variables:", variables_in_aic, "\n")
+cat("Best BIC model variables:", variables_in_bic, "\n")
 
 # Estimate the "best" linear model for logprice using the BIC
 lm_bic <- lm(logprice ~ model + age + fuelType + engineSize + transmission + mileage, data = vwcars)
 summary(lm_bic)
 confint(lm_bic)
 ```
-
-# Assumptions Checking
-## Residual vs Fitted Plot
-
+## Assumptions Checking
+**Residual vs Fitted Plot**
 ```{r}
 ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
   geom_point() +
@@ -70,8 +81,7 @@ ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
   geom_abline(intercept = 0, slope = 0, col = "blue") +
   theme_bw()
 ```
-## Scale-Location Plot
-
+**Scale-Location Plot**
 ```{r}
 fitted_values <- fitted(lm_bic)
 std_res <- rstandard(lm_bic)
@@ -84,8 +94,7 @@ ggplot(data = vwcars, aes(y = std_res, x = fitted_values)) +
   theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"), text = element_text(size = 20)) +
   theme_bw()
 ```
-## Normal Q-Q Plot
-
+**Normal Q-Q Plot**
 ```{r}
 ggplot(data = vwcars, aes(sample = lm_bic$residuals)) +
   geom_qq(color = "black") +
@@ -96,4 +105,4 @@ ggplot(data = vwcars, aes(sample = lm_bic$residuals)) +
         axis.title.y = element_text(size = 14, face = "bold"),
         axis.text = element_text(size = 12, face = "bold")) +
   theme_bw()
-  ```
+```

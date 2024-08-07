@@ -36,7 +36,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat", "reshape2", "leaps", "olsrr"), dependencies = TRUE, quiet = FALSE)'
+        Rscript -e 'remotes::install_cran(c("ggplot2", "rmarkdown", "testthat", "reshape2", "leaps"), dependencies = TRUE, quiet = FALSE)'
 
     - name: Verify ggplot2 installation
       run: |
@@ -57,11 +57,6 @@ jobs:
     - name: Verify leaps installation
       run: |
         Rscript -e 'if (!requireNamespace("leaps", quietly = TRUE)) { print("Installing leaps failed."); stop("leaps not installed") } else { print("leaps successfully installed.") }'
-
-    - name: Install olsrr with dependencies
-      run: |
-        Rscript -e 'install.packages("olsrr", dependencies = TRUE, repos = "http://cran.us.r-project.org")'
-        Rscript -e 'if (!requireNamespace("olsrr", quietly = TRUE)) { print("Installing olsrr failed."); stop("olsrr not installed") } else { print("olsrr successfully installed.") }'
 
     - name: List root directory contents
       run: |
