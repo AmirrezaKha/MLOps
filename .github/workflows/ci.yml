@@ -72,7 +72,7 @@ jobs:
 
     - name: Run tests
       run: |
-        Rscript tests/test_regression.R
+        Rscript tests/test_analysis.R
 
     - name: Render R Markdown files
       run: |
