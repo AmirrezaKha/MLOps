@@ -77,7 +77,7 @@ jobs:
     - name: Render R Markdown files
       run: |
         Rscript -e 'rmarkdown::render("R/analysis.Rmd")'
-        Rscript -e 'rmarkdown::render("R/statistical_test.Rmd")'
+        Rscript -e 'rmarkdown::render("R/statistical-test.Rmd")'
         Rscript -e 'rmarkdown::render("R/regression.Rmd")'
 
     - name: Print session info

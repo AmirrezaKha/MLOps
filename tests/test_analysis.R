@@ -46,7 +46,7 @@ run_tests()
 library(testthat)
 
 # Load the statistical test Rmd script to ensure it runs without errors
-rmarkdown::render("R/statistical_test.Rmd")
+rmarkdown::render("R/statistical-test.Rmd")
 
 # Load the regression Rmd script to create the models
 rmarkdown::render("R/regression.Rmd")
