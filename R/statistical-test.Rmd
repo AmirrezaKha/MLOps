@@ -13,7 +13,7 @@ library(ggplot2)
 
 ## Load the dataset
 ```{r}
-immo_data_ruhr <- read.csv("../data/immo_data_ruhr.csv", sep = ",")
+immo_data_ruhr <- read.csv("../data/ImmoDataRuhr.csv", sep = ",")
 colnames(immo_data_ruhr)[3] <- "region"
 ```
 ## Calculate summary statistics by region

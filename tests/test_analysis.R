@@ -23,7 +23,7 @@ run_tests <- function() {
   }
 
   # Test 2: Data loads correctly for immo_data_ruhr.csv
-  immo_data_ruhr <- read.csv("data/immo_data_ruhr.csv", sep = ",")
+  immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
   if (nrow(immo_data_ruhr) <= 0) {
     stop("Test failed: Data did not load correctly. Dataset has zero rows.")
   } else {
@@ -53,7 +53,7 @@ rmarkdown::render("R/regression.Rmd")
 
 # Test if the data is loaded correctly for statistical tests
 test_that("Data is loaded for statistical tests", {
-  immo_data_ruhr <- read.csv("data/immo_data_ruhr.csv", sep = ",")
+  immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
   expect_true(nrow(immo_data_ruhr) > 0)
   expect_true("region" %in% colnames(immo_data_ruhr))
   expect_true("sqmPrice" %in% colnames(immo_data_ruhr))
@@ -61,7 +61,7 @@ test_that("Data is loaded for statistical tests", {
 
 # Test the summary statistics calculation
 test_that("Summary statistics are calculated", {
-  immo_data_ruhr <- read.csv("data/immo_data_ruhr.csv", sep = ",")
+  immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
   summary_stats <- aggregate(sqmPrice ~ region, data = immo_data_ruhr, function(x) {
     c(
       count = length(x),
