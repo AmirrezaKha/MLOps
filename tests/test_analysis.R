@@ -77,5 +77,5 @@ test_that("Summary statistics are calculated", {
   expect_true(ncol(summary_stats) > 1)
   expect_true("region" %in% colnames(summary_stats))
 })
-
+# test finished
 
