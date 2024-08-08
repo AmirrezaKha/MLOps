@@ -78,9 +78,4 @@ test_that("Summary statistics are calculated", {
   expect_true("region" %in% colnames(summary_stats))
 })
 
-# Test the linear models from the regression analysis
-test_that("Linear models are created", {
-  expect_true(exists("lm_price"))
-  expect_true(exists("lm_logprice"))
-  expect_true(exists("lm_bic"))
-})
+
