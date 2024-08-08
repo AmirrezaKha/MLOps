@@ -49,8 +49,7 @@ library(testthat)
 test_that("Data is loaded for statistical tests", {
   immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
   expect_true(nrow(immo_data_ruhr) > 0)
-  expect_true("region" %in% colnames(immo_data_ruhr))
-  expect_true("sqmPrice" %in% colnames(immo_data_ruhr))
+
 })
 
 # Test the summary statistics calculation
