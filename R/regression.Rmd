@@ -39,13 +39,17 @@ best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSiz
 subsets_summary <- summary(best_subsets)
 
 # Find the model with the lowest AIC and BIC
-aic_values <- sapply(1:length(subsets_summary$which), function(i) {
-  fit <- lm(logprice ~ ., data = as.data.frame(vwcars)[, c(TRUE, subsets_summary$which[i, -1])])
+aic_values <- sapply(1:length(subsets_summary$outmat), function(i) {
+  predictors <- names(which(subsets_summary$which[i, -1]))
+  formula <- as.formula(paste("logprice ~", paste(predictors, collapse = " + ")))
+  fit <- lm(formula, data = vwcars)
   AIC(fit)
 })
 
-bic_values <- sapply(1:length(subsets_summary$which), function(i) {
-  fit <- lm(logprice ~ ., data = as.data.frame(vwcars)[, c(TRUE, subsets_summary$which[i, -1])])
+bic_values <- sapply(1:length(subsets_summary$outmat), function(i) {
+  predictors <- names(which(subsets_summary$which[i, -1]))
+  formula <- as.formula(paste("logprice ~", paste(predictors, collapse = " + ")))
+  fit <- lm(formula, data = vwcars)
   BIC(fit)
 })
 
@@ -65,7 +69,8 @@ cat("Best AIC model variables:", variables_in_aic, "\n")
 cat("Best BIC model variables:", variables_in_bic, "\n")
 
 # Estimate the "best" linear model for logprice using the BIC
-lm_bic <- lm(logprice ~ model + age + fuelType + engineSize + transmission + mileage, data = vwcars)
+best_formula_bic <- as.formula(paste("logprice ~", paste(variables_in_bic[-1], collapse = " + ")))
+lm_bic <- lm(best_formula_bic, data = vwcars)
 summary(lm_bic)
 confint(lm_bic)
 ```
