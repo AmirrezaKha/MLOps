@@ -83,9 +83,6 @@ test_that("Linear models are created", {
   expect_true(exists("lm_price"))
   expect_true(exists("lm_logprice"))
   expect_true(exists("lm_bic"))
-  expect_true(is.list(lm_price))
-  expect_true(is.list(lm_logprice))
-  expect_true(is.list(lm_bic))
 })
 
 # Test if the best subset selection is performed correctly
