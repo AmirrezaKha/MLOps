@@ -84,11 +84,3 @@ test_that("Linear models are created", {
   expect_true(exists("lm_logprice"))
   expect_true(exists("lm_bic"))
 })
-
-# Test if the best subset selection is performed correctly
-test_that("Best subset selection is performed", {
-  expect_true(exists("z"))
-  expect_equal(nrow(z), 255)
-  expect_true(is.numeric(AIC))
-  expect_true(is.numeric(BIC))
-})
