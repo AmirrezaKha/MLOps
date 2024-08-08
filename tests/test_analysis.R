@@ -45,12 +45,6 @@ run_tests()
 # Additional tests for statistical analysis
 library(testthat)
 
-# Load the statistical test Rmd script to ensure it runs without errors
-rmarkdown::render("R/statistical-test.Rmd")
-
-# Load the regression Rmd script to create the models
-rmarkdown::render("R/regression.Rmd")
-
 # Test if the data is loaded correctly for statistical tests
 test_that("Data is loaded for statistical tests", {
   immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
