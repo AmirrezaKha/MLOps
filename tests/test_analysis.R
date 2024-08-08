@@ -69,6 +69,7 @@ test_that("Summary statistics are calculated", {
     )
   })
   expect_true(ncol(summary_stats) > 1)
+
 })
 # test finished
 
