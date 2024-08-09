@@ -12,46 +12,35 @@ library(leaps)
 ## Data Preparation
 
 ```{r}
-# Read the dataset
-vwcars <- read.csv("../data/vwcars.csv", sep = ",")
+```{r setup, include=FALSE}
+# Load necessary libraries
+library(leaps)
+library(MASS)  # For AIC and BIC functions
 
-# Create new columns for log price, fuel consumption, and age of the car
+# Load the data (ensure the path is correct)
+vwcars <- read.csv("../data/vwscars.csv")
+
+# Convert 'model' to a factor and handle factor levels
+vwcars$model <- as.factor(vwcars$model)
+vwcars$model <- droplevels(vwcars$model)
+
+# Add additional transformations if needed
 vwcars$logprice <- log(vwcars$price)
 vwcars$lp100 <- 282.48 / vwcars$mpg
 vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
 
 ```
-**Linear Regression**
+**Linear Regression && Best Subset Selection**
 ```{r}
-
-# Ensure 'model' is a factor and drop any unused levels
-vwcars$model <- as.factor(vwcars$model)
-vwcars$model <- droplevels(vwcars$model)
-
-# Optional: Set a specific reference level for 'model' (e.g., "ModelA" as reference)
-# vwcars$model <- relevel(vwcars$model, ref = "ModelA")
-
-# Linear regression analysis for price
-lm_price <- lm(price ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
-summary(lm_price)
-
-# Linear regression analysis for log(price)
-lm_logprice <- lm(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
-summary(lm_logprice)
-
-```
-**Best Subset Selection**
-```{r}
-# Best Subset Selection for all subsets of predictors
-best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, 
-                           data = vwcars, nvmax = NULL)
+# Perform best subset selection
+best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars, nvmax = NULL)
 
 # Create a summary object
 subsets_summary <- summary(best_subsets)
 
 # Compute AIC and BIC values for each model subset
-aic_values <- numeric(length(subsets_summary$outmat))
-bic_values <- numeric(length(subsets_summary$outmat))
+aic_values <- numeric(nrow(subsets_summary$outmat))
+bic_values <- numeric(nrow(subsets_summary$outmat))
 
 for (i in 1:nrow(subsets_summary$outmat)) {
   predictors <- names(which(subsets_summary$which[i, -1]))
@@ -79,9 +68,10 @@ lm_bic <- lm(best_formula_bic, data = vwcars)
 summary(lm_bic)
 confint(lm_bic)
 
+
 ```
-## Assumptions Checking
-**Residual vs Fitted Plot**
+
+
 ```{r}
 ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
   geom_point() +
