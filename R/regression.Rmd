@@ -13,7 +13,7 @@ library(leaps)
 
 ```{r}
 # Read the dataset
-vwcars <- read.csv("../data/vwscars.csv", sep = ",")
+vwcars <- read.csv("../data/vwcars.csv", sep = ",")
 
 # Create new columns for log price, fuel consumption, and age of the car
 vwcars$logprice <- log(vwcars$price)
