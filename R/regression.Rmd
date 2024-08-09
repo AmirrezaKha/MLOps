@@ -42,26 +42,24 @@ summary(lm_logprice)
 ```
 **Best Subset Selection**
 ```{r}
-# Best Subset Selection for all the subsets of the predictors
-best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars, nvmax = NULL)
+# Best Subset Selection for all subsets of predictors
+best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, 
+                           data = vwcars, nvmax = NULL)
 
 # Create a summary object
 subsets_summary <- summary(best_subsets)
 
-# Find the model with the lowest AIC and BIC
-aic_values <- sapply(1:length(subsets_summary$outmat), function(i) {
-  predictors <- names(which(subsets_summary$which[i, -1]))
-  formula <- as.formula(paste("logprice ~", paste(predictors, collapse = " + ")))
-  fit <- lm(formula, data = vwcars)
-  AIC(fit)
-})
+# Compute AIC and BIC values for each model subset
+aic_values <- numeric(length(subsets_summary$outmat))
+bic_values <- numeric(length(subsets_summary$outmat))
 
-bic_values <- sapply(1:length(subsets_summary$outmat), function(i) {
+for (i in 1:nrow(subsets_summary$outmat)) {
   predictors <- names(which(subsets_summary$which[i, -1]))
   formula <- as.formula(paste("logprice ~", paste(predictors, collapse = " + ")))
   fit <- lm(formula, data = vwcars)
-  BIC(fit)
-})
+  aic_values[i] <- AIC(fit)
+  bic_values[i] <- BIC(fit)
+}
 
 # Find the index of the minimum AIC and BIC
 idx_AIC <- which.min(aic_values)
@@ -71,10 +69,7 @@ idx_BIC <- which.min(bic_values)
 variables_in_aic <- names(which(subsets_summary$which[idx_AIC, ]))
 variables_in_bic <- names(which(subsets_summary$which[idx_BIC, ]))
 
-# Print AIC and BIC
-AIC <- aic_values[idx_AIC]
-BIC <- bic_values[idx_BIC]
-
+# Print AIC and BIC values
 cat("Best AIC model variables:", variables_in_aic, "\n")
 cat("Best BIC model variables:", variables_in_bic, "\n")
 
