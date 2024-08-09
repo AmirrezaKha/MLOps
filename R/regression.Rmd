@@ -12,10 +12,6 @@ library(leaps)
 ## Data Preparation
 
 ```{r}
-```{r setup, include=FALSE}
-# Load necessary libraries
-library(leaps)
-library(MASS)  # For AIC and BIC functions
 
 # Load the data (ensure the path is correct)
 vwcars <- read.csv("../data/vwscars.csv")
