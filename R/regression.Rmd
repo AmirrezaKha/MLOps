@@ -13,12 +13,13 @@ library(leaps)
 
 ```{r}
 # Read the dataset
-vwcars <- read.csv("../data/vwcars.csv", sep = ",")
+vwcars <- read.csv(file.choose(), sep = ",")
 
 # Create new columns for log price, fuel consumption, and age of the car
 vwcars$logprice <- log(vwcars$price)
 vwcars$lp100 <- 282.48 / vwcars$mpg
 vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
+
 ```
 **Linear Regression**
 ```{r}
@@ -29,6 +30,7 @@ summary(lm_price)
 # Linear regression analysis for log(price)
 lm_logprice <- lm(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
 summary(lm_logprice)
+
 ```
 **Best Subset Selection**
 ```{r}
@@ -73,6 +75,7 @@ best_formula_bic <- as.formula(paste("logprice ~", paste(variables_in_bic[-1], c
 lm_bic <- lm(best_formula_bic, data = vwcars)
 summary(lm_bic)
 confint(lm_bic)
+
 ```
 ## Assumptions Checking
 **Residual vs Fitted Plot**
@@ -85,6 +88,7 @@ ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
   theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"), text = element_text(size = 20)) +
   geom_abline(intercept = 0, slope = 0, col = "blue") +
   theme_bw()
+
 ```
 **Scale-Location Plot**
 ```{r}
@@ -98,6 +102,7 @@ ggplot(data = vwcars, aes(y = std_res, x = fitted_values)) +
   labs(y = "Standardized Residuals", x = "Fitted Values") +
   theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"), text = element_text(size = 20)) +
   theme_bw()
+
 ```
 **Normal Q-Q Plot**
 ```{r}
@@ -110,4 +115,5 @@ ggplot(data = vwcars, aes(sample = lm_bic$residuals)) +
         axis.title.y = element_text(size = 14, face = "bold"),
         axis.text = element_text(size = 12, face = "bold")) +
   theme_bw()
+
 ```

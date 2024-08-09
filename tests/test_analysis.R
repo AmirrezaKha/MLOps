@@ -45,11 +45,18 @@ run_tests()
 # Additional tests for statistical analysis
 library(testthat)
 
+# Load the statistical test Rmd script to ensure it runs without errors
+rmarkdown::render("R/statistical-test.Rmd")
+
+# Load the regression Rmd script to create the models
+rmarkdown::render("R/regression.Rmd")
+
 # Test if the data is loaded correctly for statistical tests
 test_that("Data is loaded for statistical tests", {
   immo_data_ruhr <- read.csv("data/ImmoDataRuhr.csv", sep = ",")
   expect_true(nrow(immo_data_ruhr) > 0)
-
+  expect_true("region" %in% colnames(immo_data_ruhr))
+  expect_true("sqmPrice" %in% colnames(immo_data_ruhr))
 })
 
 # Test the summary statistics calculation
@@ -68,7 +75,7 @@ test_that("Summary statistics are calculated", {
     )
   })
   expect_true(ncol(summary_stats) > 1)
-
+  expect_true("region" %in% colnames(summary_stats))
 })
 # test finished
 
