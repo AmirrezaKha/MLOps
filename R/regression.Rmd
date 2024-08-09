@@ -14,7 +14,7 @@ library(leaps)
 ```{r}
 
 # Load the data (ensure the path is correct)
-vwcars <- read.csv("../data/vwscars.csv")
+vwcars <- read.csv("../data/vwcars.csv")
 
 # Convert 'model' to a factor and handle factor levels
 vwcars$model <- as.factor(vwcars$model)
