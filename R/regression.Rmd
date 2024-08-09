@@ -23,6 +23,14 @@ vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
 ```
 **Linear Regression**
 ```{r}
+
+# Ensure 'model' is a factor and drop any unused levels
+vwcars$model <- as.factor(vwcars$model)
+vwcars$model <- droplevels(vwcars$model)
+
+# Optional: Set a specific reference level for 'model' (e.g., "ModelA" as reference)
+# vwcars$model <- relevel(vwcars$model, ref = "ModelA")
+
 # Linear regression analysis for price
 lm_price <- lm(price ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
 summary(lm_price)
