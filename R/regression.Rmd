@@ -38,13 +38,11 @@ summary(lm_full)
 # Display the confidence intervals for the model coefficients
 confint(lm_full)
 
-
-
 ```
 
 
 ```{r}
-ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
+ggplot(vwcars, aes(y = lm_full$residuals, x = lm_full$fitted.values)) +
   geom_point() +
   ylab("Residuals") +
   xlab("Fitted values") +
@@ -56,8 +54,8 @@ ggplot(vwcars, aes(y = lm_bic$residuals, x = lm_bic$fitted.values)) +
 ```
 **Scale-Location Plot**
 ```{r}
-fitted_values <- fitted(lm_bic)
-std_res <- rstandard(lm_bic)
+fitted_values <- fitted(lm_full)
+std_res <- rstandard(lm_full)
 
 ggplot(data = vwcars, aes(y = std_res, x = fitted_values)) +
   geom_point(size = 1.5) +
@@ -70,7 +68,7 @@ ggplot(data = vwcars, aes(y = std_res, x = fitted_values)) +
 ```
 **Normal Q-Q Plot**
 ```{r}
-ggplot(data = vwcars, aes(sample = lm_bic$residuals)) +
+ggplot(data = vwcars, aes(sample = lm_full$residuals)) +
   geom_qq(color = "black") +
   geom_qq_line(color = "blue") +
   labs(y = "Residuals (BIC model)", x = "Theoretical Quantiles (BIC model)") +
