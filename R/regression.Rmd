@@ -26,43 +26,18 @@ vwcars$lp100 <- 282.48 / vwcars$mpg
 vwcars$age <- as.numeric(format(Sys.Date(), "%Y")) - vwcars$year
 
 ```
-**Linear Regression && Best Subset Selection**
+**Linear Regression**
 ```{r}
-# Perform best subset selection
-best_subsets <- regsubsets(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars, nvmax = NULL)
 
-# Create a summary object
-subsets_summary <- summary(best_subsets)
+# Fit a linear regression model for log(price) using all predictors
+lm_full <- lm(logprice ~ model + age + lp100 + fuelType + engineSize + tax + transmission + mileage, data = vwcars)
 
-# Compute AIC and BIC values for each model subset
-aic_values <- numeric(nrow(subsets_summary$outmat))
-bic_values <- numeric(nrow(subsets_summary$outmat))
+# Display the summary of the model
+summary(lm_full)
 
-for (i in 1:nrow(subsets_summary$outmat)) {
-  predictors <- names(which(subsets_summary$which[i, -1]))
-  formula <- as.formula(paste("logprice ~", paste(predictors, collapse = " + ")))
-  fit <- lm(formula, data = vwcars)
-  aic_values[i] <- AIC(fit)
-  bic_values[i] <- BIC(fit)
-}
+# Display the confidence intervals for the model coefficients
+confint(lm_full)
 
-# Find the index of the minimum AIC and BIC
-idx_AIC <- which.min(aic_values)
-idx_BIC <- which.min(bic_values)
-
-# Extract the variables from the best models
-variables_in_aic <- names(which(subsets_summary$which[idx_AIC, ]))
-variables_in_bic <- names(which(subsets_summary$which[idx_BIC, ]))
-
-# Print AIC and BIC values
-cat("Best AIC model variables:", variables_in_aic, "\n")
-cat("Best BIC model variables:", variables_in_bic, "\n")
-
-# Estimate the "best" linear model for logprice using the BIC
-best_formula_bic <- as.formula(paste("logprice ~", paste(variables_in_bic[-1], collapse = " + ")))
-lm_bic <- lm(best_formula_bic, data = vwcars)
-summary(lm_bic)
-confint(lm_bic)
 
 
 ```
